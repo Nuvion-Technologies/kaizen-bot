@@ -1,105 +1,226 @@
-import React from 'react';
-import {
-    LayoutDashboard,
-    Users,
-    Settings,
-    LogOut,
-    Bell,
-    Search,
-    Menu,
-    X
-} from 'lucide-react';
+// import React, { useState } from 'react';
+// import { Bell, LogOut, Menu, X } from 'lucide-react';
+// import Sidebar from './Sidebar'; // Import the external Sidebar
+//
+// const DashboardLayout = ({ children }) => {
+//     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+//
+//     const toggleMobileMenu = () => {
+//         setMobileMenuOpen(!mobileMenuOpen);
+//     };
+//
+//     return (
+//         <div className="flex h-screen bg-gray-100">
+//             {/* External Sidebar */}
+//             {/*<Sidebar />*/}
+//
+//             {/* Main content area */}
+//             <div className="flex flex-col flex-1 overflow-hidden md:ml-64"> {/* Offset for sidebar width */}
+//                 {/* Top Navigation */}
+//                 <div className="relative z-10 flex-shrink-0 flex h-16 bg-white shadow">
+//                     <button
+//                         className="px-4 border-r border-gray-200 text-gray-500 md:hidden"
+//                         onClick={toggleMobileMenu}
+//                     >
+//                         <span className="sr-only">Open sidebar</span>
+//                         <Menu className="h-6 w-6" />
+//                     </button>
+//                     <div className="flex-1 px-4 flex justify-between">
+//                         <div className="flex-1 flex items-center">
+//                             <h1 className="text-2xl font-semibold text-gray-900">Super Admin Dashboard</h1>
+//                         </div>
+//                         <div className="ml-4 flex items-center md:ml-6">
+//                             <button className="bg-white p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+//                                 <span className="sr-only">View notifications</span>
+//                                 <Bell className="h-6 w-6" />
+//                             </button>
+//                             <div className="ml-3 relative">
+//                                 <button className="max-w-xs bg-white flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+//                                     <span className="sr-only">Open user menu</span>
+//                                     <div className="h-8 w-8 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold">
+//                                         A
+//                                     </div>
+//                                 </button>
+//                             </div>
+//                             <button className="ml-4 bg-white p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+//                                 <span className="sr-only">Log out</span>
+//                                 <LogOut className="h-6 w-6" />
+//                             </button>
+//                         </div>
+//                     </div>
+//                 </div>
+//
+//                 {/* Mobile Sidebar Overlay */}
+//                 {mobileMenuOpen && (
+//                     <div className="fixed inset-0 z-40 md:hidden">
+//                         <div
+//                             className="fixed inset-0 bg-gray-600 bg-opacity-75 transition-opacity duration-300"
+//                             onClick={toggleMobileMenu}
+//                         ></div>
+//                         <div className="relative flex-1 flex flex-col max-w-xs w-full bg-white transform transition duration-300 ease-in-out translate-x-0">
+//                             <div className="absolute top-0 right-0 -mr-12 pt-2">
+//                                 <button
+//                                     className="ml-1 flex items-center justify-center h-10 w-10 rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
+//                                     onClick={toggleMobileMenu}
+//                                 >
+//                                     <X className="h-6 w-6 text-white" />
+//                                 </button>
+//                             </div>
+//                             <Sidebar /> {/* Embed Sidebar for mobile */}
+//                         </div>
+//                     </div>
+//                 )}
+//
+//                 {/* Main Content */}
+//                 <main className="flex-1 relative overflow-y-auto focus:outline-none p-6">
+//                     {children}
+//                 </main>
+//             </div>
+//         </div>
+//     );
+// };
+//
+// export default DashboardLayout;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import React, { useState, useContext } from 'react';
+import { Bell, LogOut, Menu, X } from 'lucide-react';
+import Sidebar from './Sidebar'; // Import the external Sidebar
+import { ThemeContext } from '../context/ThemeContext';
 
 const DashboardLayout = ({ children }) => {
-    const [sidebarOpen, setSidebarOpen] = React.useState(false);
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const { theme } = useContext(ThemeContext);
+
+    const toggleMobileMenu = () => {
+        setMobileMenuOpen(!mobileMenuOpen);
+    };
 
     return (
-        <div className="flex h-screen bg-gray-100">
-            {/* Mobile sidebar backdrop */}
-            {sidebarOpen && (
+        <div
+            className={`flex h-screen ${
+                theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'
+            }`}
+        >
+            {/* External Sidebar (Desktop) */}
+            <Sidebar />
+
+            {/* Main content area */}
+            <div className="flex flex-col flex-1 overflow-hidden md:ml-64">
+                {/* Top Navigation */}
                 <div
-                    className="fixed inset-0 z-20 bg-black bg-opacity-50 lg:hidden"
-                    onClick={() => setSidebarOpen(false)}
-                ></div>
-            )}
-
-            {/* Sidebar */}
-            <div className={`fixed inset-y-0 left-0 z-30 w-64 bg-white shadow-lg transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 transition-transform duration-300 ease-in-out`}>
-                <div className="flex items-center justify-between h-16 px-6 border-b">
-                    <h1 className="text-xl font-semibold text-gray-800">Admin Portal</h1>
+                    className={`relative z-10 flex-shrink-0 flex h-16 shadow ${
+                        theme === 'dark'
+                            ? 'bg-gray-900 border-b border-gray-700 text-gray-200'
+                            : 'bg-white border-b border-gray-200 text-gray-700'
+                    }`}
+                >
                     <button
-                        className="lg:hidden text-gray-500 hover:text-gray-700"
-                        onClick={() => setSidebarOpen(false)}
+                        className={`px-4 border-r ${
+                            theme === 'dark'
+                                ? 'border-gray-700 text-gray-400 hover:bg-gray-700'
+                                : 'border-gray-200 text-gray-500 hover:bg-gray-100'
+                        } md:hidden`}
+                        onClick={toggleMobileMenu}
                     >
-                        <X size={20} />
+                        <span className="sr-only">Open sidebar</span>
+                        <Menu className="h-6 w-6" />
                     </button>
-                </div>
-                <nav className="px-4 py-6">
-                    <ul className="space-y-1">
-                        <li>
-                            <a href="#" className="flex items-center px-4 py-3 text-gray-800 bg-gray-100 rounded-md">
-                                <LayoutDashboard className="w-5 h-5 mr-3" />
-                                <span>Dashboard</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" className="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-100 rounded-md">
-                                <Users className="w-5 h-5 mr-3" />
-                                <span>Members</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" className="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-100 rounded-md">
-                                <Settings className="w-5 h-5 mr-3" />
-                                <span>Settings</span>
-                            </a>
-                        </li>
-                    </ul>
-                    <div className="pt-8 mt-8 border-t">
-                        <a href="#" className="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-100 rounded-md">
-                            <LogOut className="w-5 h-5 mr-3" />
-                            <span>Logout</span>
-                        </a>
-                    </div>
-                </nav>
-            </div>
-
-            {/* Main content */}
-            <div className="flex-1 flex flex-col lg:ml-64">
-                {/* Header */}
-                <header className="flex items-center justify-between h-16 px-6 bg-white border-b">
-                    <button
-                        className="text-gray-500 lg:hidden"
-                        onClick={() => setSidebarOpen(true)}
-                    >
-                        <Menu size={24} />
-                    </button>
-                    <div className="flex-1 flex justify-center lg:justify-end">
-                        <div className="relative w-full max-w-md lg:max-w-xs">
-                            <span className="absolute inset-y-0 left-0 flex items-center pl-3">
-                                <Search className="w-5 h-5 text-gray-400" />
-                            </span>
-                            <input
-                                type="text"
-                                placeholder="Search..."
-                                className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-                            />
+                    <div className="flex-1 px-4 flex justify-between">
+                        <div className="flex-1 flex items-center">
+                            <h1
+                                className={`text-2xl font-semibold ${
+                                    theme === 'dark' ? 'text-gray-200' : 'text-gray-900'
+                                }`}
+                            >
+                                Super Admin Dashboard
+                            </h1>
                         </div>
-                    </div>
-                    <div className="flex items-center">
-                        <button className="p-1 text-gray-400 rounded-full hover:bg-gray-100 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                            <Bell className="w-6 h-6" />
-                        </button>
-                        <div className="ml-4 relative flex-shrink-0">
-                            <div className="h-8 w-8 rounded-full bg-blue-600 flex items-center justify-center text-white font-medium">
-                                SA
+                        <div className="ml-4 flex items-center md:ml-6">
+                            <button
+                                className={`p-1 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${
+                                    theme === 'dark'
+                                        ? 'bg-gray-900 text-gray-400 hover:text-gray-300'
+                                        : 'bg-white text-gray-400 hover:text-gray-500'
+                                }`}
+                            >
+                                <span className="sr-only">View notifications</span>
+                                <Bell className="h-6 w-6" />
+                            </button>
+                            <div className="ml-3 relative">
+                                <button
+                                    className={`max-w-xs flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${
+                                        theme === 'dark' ? 'bg-gray-900' : 'bg-white'
+                                    }`}
+                                >
+                                    <span className="sr-only">Open user menu</span>
+                                    <div className="h-8 w-8 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold">
+                                        A
+                                    </div>
+                                </button>
                             </div>
+                            <button
+                                className={`ml-4 p-1 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${
+                                    theme === 'dark'
+                                        ? 'bg-gray-900 text-gray-400 hover:text-gray-300'
+                                        : 'bg-white text-gray-400 hover:text-gray-500'
+                                }`}
+                            >
+                                <span className="sr-only">Log out</span>
+                                <LogOut className="h-6 w-6" />
+                            </button>
                         </div>
                     </div>
-                </header>
+                </div>
 
-                {/* Page content */}
-                <main className="flex-1 overflow-y-auto p-6">
+                {/* Mobile Sidebar Overlay */}
+                {mobileMenuOpen && (
+                    <div className="fixed inset-0 z-40 md:hidden">
+                        <div
+                            className={`fixed inset-0 bg-gray-600 bg-opacity-75 transition-opacity duration-300`}
+                            onClick={toggleMobileMenu}
+                        ></div>
+                        <div
+                            className={`relative flex-1 flex flex-col max-w-xs w-full transform transition duration-300 ease-in-out translate-x-0 ${
+                                theme === 'dark' ? 'bg-gray-900' : 'bg-white'
+                            }`}
+                        >
+                            <div className="absolute top-0 right-0 -mr-12 pt-2">
+                                <button
+                                    className={`ml-1 flex items-center justify-center h-10 w-10 rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white ${
+                                        theme === 'dark' ? 'text-gray-300' : 'text-white'
+                                    }`}
+                                    onClick={toggleMobileMenu}
+                                >
+                                    <X className="h-6 w-6" />
+                                </button>
+                            </div>
+                            <Sidebar /> {/* Embed Sidebar for mobile */}
+                        </div>
+                    </div>
+                )}
+
+                {/* Main Content */}
+                <main
+                    className={`flex-1 relative overflow-y-auto focus:outline-none p-6 ${
+                        theme === 'dark' ? 'bg-gray-800 text-gray-200' : 'bg-gray-100 text-gray-900'
+                    }`}
+                >
                     {children}
                 </main>
             </div>
@@ -108,3 +229,11 @@ const DashboardLayout = ({ children }) => {
 };
 
 export default DashboardLayout;
+
+
+
+
+
+
+
+

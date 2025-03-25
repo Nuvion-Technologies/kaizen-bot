@@ -1,13 +1,154 @@
+// import React from 'react';
+// import { Routes, Route, Navigate } from 'react-router-dom';
+// import { isAuthenticated, getUserRole } from './utils/auth';
+//
+// // Auth Pages
+// import Login from './pages/auth/Login';
+// import Register from './pages/auth/Register';
+// import ForgotPassword from './pages/auth/ForgotPassword';
+// import ResetPassword from './pages/auth/ResetPassword';
+//
+// // Dashboard Pages
+// import SuperAdminDashboard from './pages/dashboard/SuperAdminDashboard';
+// import ManagerDashboard from './pages/dashboard/ManagerDashboard';
+// import UserDashboard from './pages/dashboard/UserDashboard';
+//
+// // Common Pages
+// import Portfolio from './pages/common/Portfolio';
+// import Orders from './pages/common/Orders';
+// import Profile from './pages/common/Profile';
+// import NotFound from './pages/NotFound';
+// import Analytics from "./pages/common/Analytics.jsx";
+// import Dummy from "./pages/common/Dummy.jsx";
+//
+// // Protected Route Component
+// const ProtectedRoute = ({ children, allowedRoles }) => {
+//     if (!isAuthenticated()) {
+//         return <Navigate to="/login" replace />;
+//     }
+//
+//     const userRole = getUserRole();
+//
+//     // Ensure users can only access their respective dashboard
+//     if (!allowedRoles.includes(userRole)) {
+//         return <Navigate to={`/dashboard/${userRole === 'superuser' ? 'super-admin' : userRole}`} replace />;
+//     }
+//
+//     return children;
+// };
+//
+//
+// const AppRoutes = () => {
+//     return (
+//         <Routes>
+//             {/* Auth Routes */}
+//             <Route path="/login" element={<Login />} />
+//             <Route path="/register" element={<Register />} />
+//             <Route path="/forgot-password" element={<ForgotPassword />} />
+//             <Route path="/reset-password" element={<ResetPassword />} />
+//
+//             {/* Dashboard Routes */}
+//             <Route
+//                 path="/dashboard/super-admin"
+//                 element={
+//                     <ProtectedRoute allowedRoles={['superuser']}>
+//                         <SuperAdminDashboard />
+//                     </ProtectedRoute>
+//                 }
+//             />
+//             <Route
+//                 path="/dashboard/manager"
+//                 element={
+//                     <ProtectedRoute allowedRoles={['manager']}>
+//                         <ManagerDashboard />
+//                     </ProtectedRoute>
+//                 }
+//             />
+//             <Route
+//                 path="/dashboard/user"
+//                 element={
+//                     <ProtectedRoute allowedRoles={['user']}>
+//                         <UserDashboard />
+//                     </ProtectedRoute>
+//                 }
+//             />
+//
+//
+//             {/* Common Routes */}
+//             <Route
+//                 path="/portfolio"
+//                 element={
+//                     <ProtectedRoute allowedRoles={['user', 'manager', 'superuser']}>
+//                         <Portfolio />
+//                     </ProtectedRoute>
+//                 }
+//             />
+//             <Route
+//                 path="/orders"
+//                 element={
+//                     <ProtectedRoute allowedRoles={['user', 'manager', 'superuser']}>
+//                         <Orders />
+//                     </ProtectedRoute>
+//                 }
+//             />
+//             <Route
+//                 path="/analytics"
+//                 element={
+//                     <ProtectedRoute allowedRoles={['user', 'manager', 'superuser']}>
+//                         <Analytics />
+//                     </ProtectedRoute>
+//                 }
+//             />
+//             <Route
+//                 path="/profile"
+//                 element={
+//                     <ProtectedRoute allowedRoles={['user', 'manager', 'superuser']}>
+//                         <Profile />
+//                     </ProtectedRoute>
+//                 }
+//             />
+//             <Route
+//                 path="/dummy"
+//                 element={
+//                     <ProtectedRoute allowedRoles={['user', 'manager', 'superuser']}>
+//                         <Dummy />
+//                     </ProtectedRoute>
+//                 }
+//             />
+//
+//             {/* Redirect based on role */}
+//             <Route path="/" element={
+//                 <Navigate to={
+//                     isAuthenticated()
+//                         ? getUserRole() === 'superuser'
+//                             ? '/dashboard/super-admin'
+//                             : getUserRole() === 'manager'
+//                                 ? '/dashboard/manager'
+//                                 : '/dashboard/user'
+//                         : '/login'
+//                 } replace />
+//             } />
+//
+//             {/* 404 Route */}
+//             <Route path="*" element={<NotFound />} />
+//         </Routes>
+//     );
+// };
+//
+// export default AppRoutes;
+
+
+// routes.jsx
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { isAuthenticated } from './utils/auth';
-import AuthGuard from './components/AuthGuard';
+import { isAuthenticated, getUserRole } from './utils/auth';
 
 // Auth Pages
 import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
 import ForgotPassword from './pages/auth/ForgotPassword';
 import ResetPassword from './pages/auth/ResetPassword';
+import TwoFactorAuth from './pages/auth/TwoFactorAuth';
 
 // Dashboard Pages
 import SuperAdminDashboard from './pages/dashboard/SuperAdminDashboard';
@@ -19,85 +160,114 @@ import Portfolio from './pages/common/Portfolio';
 import Orders from './pages/common/Orders';
 import Profile from './pages/common/Profile';
 import NotFound from './pages/NotFound';
+import Analytics from './pages/common/Analytics.jsx';
+import Dummy from './pages/common/Dummy.jsx';
+
+// Protected Route Component
+const ProtectedRoute = ({ children, allowedRoles }) => {
+    if (!isAuthenticated()) {
+        return <Navigate to="/login" replace />;
+    }
+
+    const userRole = getUserRole();
+
+    if (!allowedRoles.includes(userRole)) {
+        return <Navigate to={`/dashboard/${userRole === 'superuser' ? 'super-admin' : userRole}`} replace />;
+    }
+
+    return children;
+};
 
 const AppRoutes = () => {
     return (
         <Routes>
-            {/* Auth Routes - Public */}
+            {/* Auth Routes */}
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="/2fa" element={<TwoFactorAuth />} />
 
-            {/* Dashboard Routes - Protected with backend verification */}
+            {/* Dashboard Routes */}
             <Route
                 path="/dashboard/super-admin"
                 element={
-                    <AuthGuard>
+                    <ProtectedRoute allowedRoles={['superuser']}>
                         <SuperAdminDashboard />
-                    </AuthGuard>
+                    </ProtectedRoute>
                 }
             />
-
             <Route
                 path="/dashboard/manager"
                 element={
-                    <AuthGuard>
+                    <ProtectedRoute allowedRoles={['manager']}>
                         <ManagerDashboard />
-                    </AuthGuard>
+                    </ProtectedRoute>
                 }
             />
-
             <Route
                 path="/dashboard/user"
                 element={
-                    <AuthGuard>
+                    <ProtectedRoute allowedRoles={['user']}>
                         <UserDashboard />
-                    </AuthGuard>
+                    </ProtectedRoute>
                 }
             />
 
-            {/* Common Routes - Protected */}
+            {/* Common Routes */}
             <Route
                 path="/portfolio"
                 element={
-                    <AuthGuard>
+                    <ProtectedRoute allowedRoles={['user', 'manager', 'superuser']}>
                         <Portfolio />
-                    </AuthGuard>
+                    </ProtectedRoute>
                 }
             />
-
             <Route
                 path="/orders"
                 element={
-                    <AuthGuard>
+                    <ProtectedRoute allowedRoles={['user', 'manager', 'superuser']}>
                         <Orders />
-                    </AuthGuard>
+                    </ProtectedRoute>
                 }
             />
-
+            <Route
+                path="/analytics"
+                element={
+                    <ProtectedRoute allowedRoles={['user', 'manager', 'superuser']}>
+                        <Analytics />
+                    </ProtectedRoute>
+                }
+            />
             <Route
                 path="/profile"
                 element={
-                    <AuthGuard>
+                    <ProtectedRoute allowedRoles={['user', 'manager', 'superuser']}>
                         <Profile />
-                    </AuthGuard>
+                    </ProtectedRoute>
                 }
             />
-
-            {/* Root Route - Redirect based on authentication status */}
             <Route
-                path="/"
+                path="/dummy"
                 element={
-                    isAuthenticated() ? (
-                        <Navigate to={`/dashboard/${getUserRole() || "user"}`} replace />
-                    ) : (
-                        <Navigate to="/login" replace />
-                    )
+                    <ProtectedRoute allowedRoles={['user', 'manager', 'superuser']}>
+                        <Dummy />
+                    </ProtectedRoute>
                 }
             />
 
-
+            {/* Redirect based on role */}
+            <Route path="/" element={
+                <Navigate to={
+                    isAuthenticated()
+                        ? getUserRole() === 'superuser'
+                            ? '/dashboard/super-admin'
+                            : getUserRole() === 'manager'
+                                ? '/dashboard/manager'
+                                : '/dashboard/user'
+                        : '/login'
+                } replace />
+            } />
 
             {/* 404 Route */}
             <Route path="*" element={<NotFound />} />

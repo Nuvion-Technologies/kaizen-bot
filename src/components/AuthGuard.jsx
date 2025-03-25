@@ -1,58 +1,41 @@
 import React, { useState, useEffect } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
-import { verifyRouteAccess, isAuthenticated, getUserRole } from '../utils/auth';
+import { isAuthenticated, getUserRole, verifyRouteAccess } from '../utils/auth';
 import LoadingSpinner from './LoadingSpinner';
 
-const AuthGuard = ({ children }) => {
+const AuthGuard = ({ children, allowedRoles }) => {
     const [loading, setLoading] = useState(true);
-    const [hasAccess, setHasAccess] = useState(false);
-    const [userRole, setUserRole] = useState(null);
     const location = useLocation();
 
     useEffect(() => {
-        const checkAccess = async () => {
-            setLoading(true);
+        // Short timeout to ensure state updates properly
+        const timer = setTimeout(() => {
+            setLoading(false);
+        }, 100);
 
-            // First check if user is authenticated at all
-            if (!isAuthenticated()) {
-                setLoading(false);
-                setHasAccess(false);
-                return;
-            }
-
-            try {
-                // Verify access with the backend
-                const access = await verifyRouteAccess(location.pathname);
-                setHasAccess(access);
-
-                // If we don't have access, determine the user's role to redirect appropriately
-                if (!access) {
-                    const role = await getUserRole();
-                    setUserRole(role);
-                }
-            } catch (error) {
-                console.error('Error checking route access:', error);
-                setHasAccess(false);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        checkAccess();
-    }, [location.pathname]);
+        return () => clearTimeout(timer);
+    }, []);
 
     if (loading) {
         return <LoadingSpinner />;
     }
 
+    // Check if user is authenticated
     if (!isAuthenticated()) {
-        // User is not authenticated, redirect to login
+        console.log("User not authenticated, redirecting to login");
         return <Navigate to="/login" state={{ from: location }} replace />;
     }
 
+    // Get user role
+    const userRole = getUserRole();
+
+    // Check if user has access to this route
+    const hasAccess = verifyRouteAccess(location.pathname);
+
     if (!hasAccess) {
-        // User is authenticated but doesn't have access to this route
-        // Redirect based on their role
+        console.log(`User with role ${userRole} does not have access to ${location.pathname}`);
+
+        // Redirect to appropriate dashboard based on user's role
         let redirectPath = '/login';
 
         if (userRole === 'superuser') {
@@ -63,10 +46,13 @@ const AuthGuard = ({ children }) => {
             redirectPath = '/dashboard/user';
         }
 
-        return <Navigate to={redirectPath} replace />;
+        // Only redirect if we're not already on the target path
+        if (location.pathname !== redirectPath) {
+            return <Navigate to={redirectPath} replace />;
+        }
     }
 
-    // User has access, render the protected component
+    // User is authenticated and has access
     return children;
 };
 
