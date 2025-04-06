@@ -358,13 +358,14 @@
 
 
 
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import { Bot, Plus, Trash2 } from 'lucide-react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import api from '../../utils/api'; // Your axios instance with interceptors
 import { getAuthToken } from '../../utils/auth'; // Token retrieval utility
 import DashboardLayout from '../../components/DashboardLayout'; // Assuming this exists
+import { ThemeContext } from '../../context/ThemeContext';
 
 const BotOrder = () => {
     const [orders, setOrders] = useState([]);
@@ -372,8 +373,8 @@ const BotOrder = () => {
     const [tradeCycleHistory, setTradeCycleHistory] = useState([]);
     const [newOrder, setNewOrder] = useState({ symbol: '', quantity: '', price: '' });
     const [loading, setLoading] = useState(true);
-    const [theme] = useState('dark'); // Hardcoded theme; replace with ThemeContext if needed
-
+    const { theme } = useContext(ThemeContext);
+    
     // Fetch Order History
     const fetchOrderHistory = async () => {
         try {

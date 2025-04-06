@@ -1259,7 +1259,7 @@ import { ThemeContext } from '../context/ThemeContext';
 import { encryptMessage, decryptMessage, parseApiResponse } from '../utils/crypto';
 
 // Import the logo
-import Logo from '/KB.png';
+import Logo from '/KBT.png';
 
 const Navbar = () => {
     const [userData, setUserData] = useState({ role: '', name: '' });
