@@ -101,7 +101,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { getUserRole } from '../utils/auth';
-import { LayoutDashboard, Briefcase, ShoppingCart, User, ChevronLeft, ChevronRight, BarChart3 } from 'lucide-react';
+import { LayoutDashboard, Briefcase, ShoppingCart, User, ChevronLeft, ChevronRight, BarChart3,Bot } from 'lucide-react';
 import { ThemeContext } from '../context/ThemeContext';
 
 const Sidebar = () => {
@@ -157,11 +157,18 @@ const Sidebar = () => {
         //     roles: ['superuser', 'manager'],
         // },
         {
+            title: 'BotOrder',
+            path: '/botorder',
+            icon: <Bot size={20} />,
+            roles: ['superuser', 'manager', 'user'],
+        },
+        {
             title: 'Profile',
             path: '/profile',
             icon: <User size={20} />,
             roles: ['superuser', 'manager', 'user'],
         },
+
     ];
 
     const filteredMenuItems = menuItems.filter((item) => item.roles.includes(userRole));

@@ -278,10 +278,6 @@
 //
 // export default Portfolio;
 
-
-
-
-
 // SECOND WORKING CODE # BHIMANI CODE
 // import DashboardLayout from '../../components/DashboardLayout';
 // import React, { useState, useEffect, useRef, useMemo } from 'react';
@@ -592,12 +588,6 @@
 //
 // export default Portfolio;
 
-
-
-
-
-
-
 // import DashboardLayout from '../../components/DashboardLayout';
 // import React, { useState, useEffect, useRef, useMemo } from 'react';
 // import { useLocation } from 'react-router-dom';
@@ -881,11 +871,6 @@
 // };
 //
 // export default Portfolio;
-
-
-
-
-
 
 // import DashboardLayout from '../../components/DashboardLayout';
 // import React, { useState, useEffect, useRef, useMemo } from 'react';
@@ -1338,7 +1323,6 @@
 //
 //
 // export default Portfolio;
-
 
 //
 //
@@ -1902,11 +1886,6 @@
 // export default Portfolio;
 
 
-
-
-
-
-
 import DashboardLayout from '../../components/DashboardLayout';
 import React, { useState, useEffect, useRef, useMemo, useContext } from 'react';
 import { useLocation } from 'react-router-dom';
@@ -1946,7 +1925,7 @@ const Portfolio = () => {
                 headers: { Authorization: `Bearer ${token}` },
             });
 
-            console.log("API Response:", response);
+            // console.log("API Response:", response);
 
             let data = response.data;
             if (typeof data === 'string') {
@@ -2008,7 +1987,7 @@ const Portfolio = () => {
             }
         } catch (err) {
             setError('Failed to fetch portfolio data: ' + (err.message || 'Unknown error'));
-            console.error('Fetch Error:', err);
+            // console.error('Fetch Error:', err);
         } finally {
             if (isInitialFetch) setLoading(false);
         }
@@ -2122,7 +2101,7 @@ const Portfolio = () => {
     useEffect(() => {
         if (location.pathname === '/portfolio') {
             fetchPortfolioData(true);
-            const intervalId = setInterval(() => fetchPortfolioData(false), 2500);
+            const intervalId = setInterval(() => fetchPortfolioData(false), 3000);
             return () => clearInterval(intervalId); // Cleanup interval on unmount
         }
     }, [location.pathname]);
