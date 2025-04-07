@@ -374,6 +374,7 @@ const BotOrder = () => {
     const [newOrder, setNewOrder] = useState({ symbol: '', quantity: '', price: '' });
     const [loading, setLoading] = useState(true);
     const { theme } = useContext(ThemeContext);
+
     
     // Fetch Order History
     const fetchOrderHistory = async () => {
