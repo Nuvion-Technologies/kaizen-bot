@@ -163,6 +163,8 @@ import NotFound from './pages/NotFound';
 import Analytics from './pages/common/Analytics.jsx';
 // import Dummy from './pages/common/Dummy.jsx';
 import BotOrder from './pages/common/BotOrder.jsx';
+import ExcelMonitor from './pages/common/ExcelMonitor.jsx';
+
 
 // Protected Route Component
 const ProtectedRoute = ({ children, allowedRoles }) => {
@@ -253,6 +255,14 @@ const AppRoutes = () => {
                 element={
                     <ProtectedRoute allowedRoles={['user', 'manager', 'superuser']}>
                         <BotOrder />
+                    </ProtectedRoute>
+                }
+            />
+            <Route
+                path="/excelmonitor"
+                element={
+                    <ProtectedRoute allowedRoles={['user', 'manager', 'superuser']}>
+                        <ExcelMonitor />
                     </ProtectedRoute>
                 }
             />

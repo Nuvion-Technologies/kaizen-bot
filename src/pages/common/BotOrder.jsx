@@ -375,7 +375,7 @@ const BotOrder = () => {
     const [loading, setLoading] = useState(true);
     const { theme } = useContext(ThemeContext);
 
-    
+
     // Fetch Order History
     const fetchOrderHistory = async () => {
         try {
@@ -497,15 +497,15 @@ const BotOrder = () => {
                                     <tr>
                                         {[
                                             'Order ID',
-                                            'Unique Order ID',
+                                            // 'Unique Order ID',
                                             'Symbol',
                                             'Status',
-                                            'Message',
                                             'Quantity',
                                             'Price',
                                             'Buy/Sell',
                                             'Created At',
                                             'Updated At',
+                                            'Message',
                                         ].map((header) => (
                                             <th
                                                 key={header}
@@ -523,9 +523,9 @@ const BotOrder = () => {
                                                 <td className={`px-6 py-4 whitespace-nowrap text-sm ${theme === 'dark' ? 'text-gray-200' : 'text-gray-900'}`}>
                                                     {order.order_id}
                                                 </td>
-                                                <td className={`px-6 py-4 whitespace-nowrap text-sm ${theme === 'dark' ? 'text-gray-200' : 'text-gray-900'}`}>
-                                                    {order.unique_order_id}
-                                                </td>
+                                                {/*<td className={`px-6 py-4 whitespace-nowrap text-sm ${theme === 'dark' ? 'text-gray-200' : 'text-gray-900'}`}>*/}
+                                                {/*    {order.unique_order_id}*/}
+                                                {/*</td>*/}
                                                 <td className={`px-6 py-4 whitespace-nowrap text-sm font-medium ${theme === 'dark' ? 'text-gray-200' : 'text-gray-900'}`}>
                                                     {order.symbol}
                                                 </td>
@@ -533,9 +533,6 @@ const BotOrder = () => {
                                                         <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(order.status)}`}>
                                                             {order.status}
                                                         </span>
-                                                </td>
-                                                <td className={`px-6 py-4 whitespace-nowrap text-sm ${theme === 'dark' ? 'text-gray-200' : 'text-gray-900'}`}>
-                                                    {order.message || 'N/A'}
                                                 </td>
                                                 <td className={`px-6 py-4 whitespace-nowrap text-sm ${theme === 'dark' ? 'text-gray-200' : 'text-gray-900'}`}>
                                                     {order.quantity}
@@ -551,6 +548,9 @@ const BotOrder = () => {
                                                 </td>
                                                 <td className={`px-6 py-4 whitespace-nowrap text-sm ${theme === 'dark' ? 'text-gray-200' : 'text-gray-900'}`}>
                                                     {order.updated_at}
+                                                </td>
+                                                <td className={`px-6 py-4 whitespace-nowrap text-sm ${theme === 'dark' ? 'text-gray-200' : 'text-gray-900'}`}>
+                                                    {order.message || 'N/A'}
                                                 </td>
 
                                             </tr>
@@ -590,12 +590,12 @@ const BotOrder = () => {
                                             'Quantity',
                                             'Status',
                                             'Base Price',
-                                            'Last Updated',
                                             'Total Quantity',
                                             'Total Sold Quantity',
                                             'Cycle Count',
-                                            'Order ID',
-                                            'Unique Order ID',
+                                            'Last Updated',
+                                            // 'Order ID',
+                                            // 'Unique Order ID',
                                             'Description',
 
                                         ].map((header) => (
@@ -636,9 +636,6 @@ const BotOrder = () => {
                                                     ₹{parseFloat(trade.base_price).toLocaleString()}
                                                 </td>
                                                 <td className={`px-6 py-4 whitespace-nowrap text-sm ${theme === 'dark' ? 'text-gray-200' : 'text-gray-900'}`}>
-                                                    {trade.last_updated || 'N/A'}
-                                                </td>
-                                                <td className={`px-6 py-4 whitespace-nowrap text-sm ${theme === 'dark' ? 'text-gray-200' : 'text-gray-900'}`}>
                                                     {trade.total_quantity}
                                                 </td>
                                                 <td className={`px-6 py-4 whitespace-nowrap text-sm ${theme === 'dark' ? 'text-gray-200' : 'text-gray-900'}`}>
@@ -648,11 +645,14 @@ const BotOrder = () => {
                                                     {trade.cycle_count}
                                                 </td>
                                                 <td className={`px-6 py-4 whitespace-nowrap text-sm ${theme === 'dark' ? 'text-gray-200' : 'text-gray-900'}`}>
-                                                    {trade.order_id ? trade.order_id : 'NaN'}
+                                                    {trade.last_updated || 'N/A'}
                                                 </td>
-                                                <td className={`px-6 py-4 whitespace-nowrap text-sm ${theme === 'dark' ? 'text-gray-200' : 'text-gray-900'}`}>
-                                                    {trade.unique_order_id}
-                                                </td>
+                                                {/*<td className={`px-6 py-4 whitespace-nowrap text-sm ${theme === 'dark' ? 'text-gray-200' : 'text-gray-900'}`}>*/}
+                                                {/*    {trade.order_id ? trade.order_id : 'NaN'}*/}
+                                                {/*</td>*/}
+                                                {/*<td className={`px-6 py-4 whitespace-nowrap text-sm ${theme === 'dark' ? 'text-gray-200' : 'text-gray-900'}`}>*/}
+                                                {/*    {trade.unique_order_id}*/}
+                                                {/*</td>*/}
                                                 <td className={`px-6 py-4 whitespace-nowrap text-sm ${theme === 'dark' ? 'text-gray-200' : 'text-gray-900'}`}>
                                                     {trade.description || 'N/A'}
                                                 </td>
@@ -686,7 +686,7 @@ const BotOrder = () => {
                                     <thead className={`${theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'}`}>
                                     <tr>
                                         {[
-                                            'ID',
+                                            'TRADE CYCLE ID',
                                             'Stock Symbol',
                                             'Cycle Start',
                                             'Cycle End',

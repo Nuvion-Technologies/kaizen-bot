@@ -101,7 +101,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { getUserRole } from '../utils/auth';
-import { LayoutDashboard, Briefcase, ShoppingCart, User, ChevronLeft, ChevronRight, BarChart3,Bot } from 'lucide-react';
+import { LayoutDashboard, Briefcase, ShoppingCart, User, ChevronLeft, ChevronRight, BarChart3,Bot,Binoculars } from 'lucide-react';
 import { ThemeContext } from '../context/ThemeContext';
 
 const Sidebar = () => {
@@ -150,16 +150,22 @@ const Sidebar = () => {
             icon: <ShoppingCart size={20} />,
             roles: ['superuser', 'manager', 'user'],
         },
-        // {
-        //     title: 'Analytics',
-        //     path: '/analytics',
-        //     icon: <BarChart3 size={20} />,
-        //     roles: ['superuser', 'manager'],
-        // },
         {
             title: 'BotOrder',
             path: '/botorder',
             icon: <Bot size={20} />,
+            roles: ['superuser', 'manager', 'user'],
+        },
+        {
+            title: 'Analytics',
+            path: '/analytics',
+            icon: <BarChart3 size={20} />,
+            roles: ['superuser', 'manager'],
+        },
+        {
+            title: 'Excel Monitor',
+            path: '/excelmonitor',
+            icon: <Binoculars size={20} />,
             roles: ['superuser', 'manager', 'user'],
         },
         {

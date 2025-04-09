@@ -2123,10 +2123,40 @@ const ManagerDashboard = () => {
         const interval = setInterval(() => {
             fetchPortfolioData();
             fetchRmsLimit();
-        }, 3000);
+        }, 7000);
 
         return () => clearInterval(interval);
     }, []);
+
+    // New function to handle user deletion
+    const handleDeleteUser = async (email) => {
+        if (!window.confirm(`Are you sure you want to delete the user with email: ${email}?`)) {
+            return;
+        }
+
+        try {
+            const token = getAuthToken();
+            // Explicitly stringify the data before encryption
+            const dataToEncrypt = JSON.stringify({ email });
+            const encryptedData = encryptMessage(dataToEncrypt);
+            const response = await api.post(
+                '/user/remove',
+                { data: encryptedData },
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+            const decryptedData = parseApiResponse(response.data.data);
+
+            if (decryptedData && decryptedData.status === "200") {
+                toast.success('User deleted successfully');
+                setRefreshTrigger((prev) => prev + 1);
+            } else {
+                throw new Error(decryptedData?.message || 'Failed to delete user');
+            }
+        } catch (error) {
+            console.error('Error deleting user:', error);
+            toast.error('Failed to delete user: ' + error.message);
+        }
+    };
 
 
 
@@ -3096,6 +3126,165 @@ const ManagerDashboard = () => {
     };
 
     const renderUsers = () => {
+        // return (
+        //     <div className={`rounded-2xl shadow-lg border overflow-hidden ${theme === 'dark' ? 'bg-gray-900 border-gray-800' : 'bg-white border-gray-50'}`}>
+        //         <div className={`p-6 border-b ${theme === 'dark' ? 'bg-gray-900 border-gray-800' : 'bg-white border-gray-50'}`}>
+        //             <h3 className={`text-xl font-semibold ${theme === 'dark' ? 'text-gray-200' : 'text-gray-900'}`}>
+        //                 User Management
+        //             </h3>
+        //             <p className={`text-sm mt-2 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-400'}`}>
+        //                 Manage your team: add, activate, or deactivate users
+        //             </p>
+        //         </div>
+        //         <div className="p-8">
+        //             <div className="flex justify-between items-center mb-8">
+        //                 {/*<h2 className={`text-2xl font-bold ${theme === 'dark' ? 'text-gray-200' : 'text-gray-900'}`}>*/}
+        //                 {/*    Dashboard Overview*/}
+        //                 {/*</h2>*/}
+        //                 <button
+        //                     onClick={() => setShowAddMemberForm(true)}
+        //                     className="flex items-center gap-2 bg-blue-500 hover:bg-blue-600 text-white px-5 py-2.5 rounded-xl transition-colors"
+        //                 >
+        //                     <UserPlus size={18} />
+        //                     <span className="text-sm font-medium">Add New Member</span>
+        //                 </button>
+        //             </div>
+        //             {showAddMemberForm && (
+        //                 <div className="fixed inset-0 bg-gray-900/50 bg-opacity-40 flex items-center justify-center z-50">
+        //                     <div className={`rounded-2xl shadow-xl w-full max-w-3xl max-h-[90vh] overflow-y-auto ${theme === 'dark' ? 'bg-gray-900' : 'bg-white'}`}>
+        //                         <div className="p-8">
+        //                             <div className="flex justify-between items-center mb-6">
+        //                                 <h3 className={`text-xl font-semibold ${theme === 'dark' ? 'text-gray-200' : 'text-gray-900'}`}>
+        //                                     Add New Member
+        //                                 </h3>
+        //                                 <button
+        //                                     onClick={() => setShowAddMemberForm(false)}
+        //                                     className={`transition-colors ${theme === 'dark' ? 'text-gray-400 hover:text-gray-200' : 'text-gray-400 hover:text-gray-600'}`}
+        //                                 >
+        //                                     <svg
+        //                                         xmlns="http://www.w3.org/2000/svg"
+        //                                         className="h-6 w-6"
+        //                                         fill="none"
+        //                                         viewBox="0 0 24 24"
+        //                                         stroke="currentColor"
+        //                                     >
+        //                                         <path
+        //                                             strokeLinecap="round"
+        //                                             strokeLinejoin="round"
+        //                                             strokeWidth={2}
+        //                                             d="M6 18L18 6M6 6l12 12"
+        //                                         />
+        //                                     </svg>
+        //                                 </button>
+        //                             </div>
+        //                             <AddMemberForm
+        //                                 onClose={() => {
+        //                                     setShowAddMemberForm(false);
+        //                                     setRefreshTrigger((prev) => prev + 1);
+        //                                 }}
+        //                             />
+        //                         </div>
+        //                     </div>
+        //                 </div>
+        //             )}
+        //             <div>
+        //                 <div className="flex justify-between items-center mb-8">
+        //                     <h4 className={`text-lg font-semibold ${theme === 'dark' ? 'text-gray-200' : 'text-gray-900'}`}>
+        //                         Users List
+        //                     </h4>
+        //                     <div className="relative w-72">
+        //                         <input
+        //                             type="text"
+        //                             placeholder="Search users..."
+        //                             value={searchTerm}
+        //                             onChange={(e) => setSearchTerm(e.target.value)}
+        //                             className={`w-full pl-10 pr-4 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-300 shadow-sm ${theme === 'dark' ? 'bg-gray-800 border-gray-700 text-gray-200' : 'bg-white border-gray-100 text-gray-900'}`}
+        //                         />
+        //                         <Search
+        //                             size={16}
+        //                             className={`absolute left-3 top-1/2 transform -translate-y-1/2 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-400'}`}
+        //                         />
+        //                     </div>
+        //                 </div>
+        //                 <div className="overflow-x-auto">
+        //                     <table className={`min-w-full divide-y ${theme === 'dark' ? 'divide-gray-800' : 'divide-gray-100'}`}>
+        //                         <thead className={`${theme === 'dark' ? 'bg-gray-800' : 'bg-white'}`}>
+        //                         <tr>
+        //                             {['Name', 'Email', 'Mobile', 'Status', 'Actions'].map((header) => (
+        //                                 <th
+        //                                     key={header}
+        //                                     scope="col"
+        //                                     className={`px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider ${theme === 'dark' ? 'text-gray-300' : 'text-gray-500'}`}
+        //                                 >
+        //                                     {header}
+        //                                 </th>
+        //                             ))}
+        //                         </tr>
+        //                         </thead>
+        //                         <tbody className={`divide-y ${theme === 'dark' ? 'divide-gray-800' : 'divide-gray-50'}`}>
+        //                         {filteredUsers.length > 0 ? (
+        //                             filteredUsers.map((user) => (
+        //                                 <tr key={user.id} className={`${theme === 'dark' ? 'bg-gray-900 hover:bg-gray-800 transition-colors' : 'hover:bg-gray-25 transition-colors'}`}>
+        //                                     <td className="px-6 py-5 whitespace-nowrap">
+        //                                         <div className={`text-sm font-medium ${theme === 'dark' ? 'text-gray-200' : 'text-gray-900'}`}>
+        //                                             {user.name}
+        //                                         </div>
+        //                                     </td>
+        //                                     <td className="px-6 py-5 whitespace-nowrap">
+        //                                         <div className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
+        //                                             {user.email}
+        //                                         </div>
+        //                                     </td>
+        //                                     <td className="px-6 py-5 whitespace-nowrap">
+        //                                         <div className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
+        //                                             {user.phone}
+        //                                         </div>
+        //                                     </td>
+        //                                     <td className="px-6 py-5 whitespace-nowrap">
+        //                                             <span
+        //                                                 className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
+        //                                                     user.is_active === 'True'
+        //                                                         ? 'bg-green-50 text-green-700'
+        //                                                         : 'bg-red-50 text-red-700'
+        //                                                 }`}
+        //                                             >
+        //                                                 {user.is_active === 'True' ? 'Active' : 'Inactive'}
+        //                                             </span>
+        //                                     </td>
+        //                                     <td className="px-6 py-5 whitespace-nowrap text-sm">
+        //                                         <div className="flex space-x-4">
+        //                                             {user.is_active === 'True' ? (
+        //                                                 <button
+        //                                                     onClick={() => handleDeactivateUser(user.email)}
+        //                                                     className={`flex items-center gap-1 transition-colors ${theme === 'dark' ? 'text-red-400 hover:text-red-300' : 'text-red-500 hover:text-red-700'}`}
+        //                                                 >
+        //                                                     <EyeOff size={16} />
+        //                                                     <span>Deactivate</span>
+        //                                                 </button>
+        //                                             ) : (
+        //                                                 <button
+        //                                                     onClick={() => handleActivateUser(user.email)}
+        //                                                     className={`flex items-center gap-1 transition-colors ${theme === 'dark' ? 'text-green-400 hover:text-green-300' : 'text-green-500 hover:text-green-700'}`}
+        //                                                 >
+        //                                                     <Eye size={16} />
+        //                                                     <span>Activate</span>
+        //                                                 </button>
+        //                                             )}
+        //                                         </div>
+        //                                     </td>
+        //                                 </tr>
+        //                             ))
+        //                         ) : (
+        //                             <tr>
+        //                                 <td colSpan={5} className={`px-6 py-5 text-center ${theme === 'dark' ? 'text-gray-400' : 'text-gray-400'}`}>
+        //                                     No users found matching your search.
+        //                                 </td>
+        //                             </tr>
+        //                         )}
+        //                         </tbody>
+        //                     </table>
+        //                 </div>
+        //             </div>
         return (
             <div className={`rounded-2xl shadow-lg border overflow-hidden ${theme === 'dark' ? 'bg-gray-900 border-gray-800' : 'bg-white border-gray-50'}`}>
                 <div className={`p-6 border-b ${theme === 'dark' ? 'bg-gray-900 border-gray-800' : 'bg-white border-gray-50'}`}>
@@ -3103,14 +3292,11 @@ const ManagerDashboard = () => {
                         User Management
                     </h3>
                     <p className={`text-sm mt-2 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-400'}`}>
-                        Manage your team: add, activate, or deactivate users
+                        Manage your team: add, activate, deactivate, or delete users
                     </p>
                 </div>
                 <div className="p-8">
                     <div className="flex justify-between items-center mb-8">
-                        {/*<h2 className={`text-2xl font-bold ${theme === 'dark' ? 'text-gray-200' : 'text-gray-900'}`}>*/}
-                        {/*    Dashboard Overview*/}
-                        {/*</h2>*/}
                         <button
                             onClick={() => setShowAddMemberForm(true)}
                             className="flex items-center gap-2 bg-blue-500 hover:bg-blue-600 text-white px-5 py-2.5 rounded-xl transition-colors"
@@ -3211,15 +3397,15 @@ const ManagerDashboard = () => {
                                                 </div>
                                             </td>
                                             <td className="px-6 py-5 whitespace-nowrap">
-                                                    <span
-                                                        className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
-                                                            user.is_active === 'True'
-                                                                ? 'bg-green-50 text-green-700'
-                                                                : 'bg-red-50 text-red-700'
-                                                        }`}
-                                                    >
-                                                        {user.is_active === 'True' ? 'Active' : 'Inactive'}
-                                                    </span>
+                                                <span
+                                                    className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
+                                                        user.is_active === 'True'
+                                                            ? 'bg-green-50 text-green-700'
+                                                            : 'bg-red-50 text-red-700'
+                                                    }`}
+                                                >
+                                                    {user.is_active === 'True' ? 'Active' : 'Inactive'}
+                                                </span>
                                             </td>
                                             <td className="px-6 py-5 whitespace-nowrap text-sm">
                                                 <div className="flex space-x-4">
@@ -3240,6 +3426,13 @@ const ManagerDashboard = () => {
                                                             <span>Activate</span>
                                                         </button>
                                                     )}
+                                                    <button
+                                                        onClick={() => handleDeleteUser(user.email)}
+                                                        className={`flex items-center gap-1 transition-colors ${theme === 'dark' ? 'text-red-400 hover:text-red-300' : 'text-red-500 hover:text-red-700'}`}
+                                                    >
+                                                        <Trash2 size={16} />
+                                                        <span>Delete</span>
+                                                    </button>
                                                 </div>
                                             </td>
                                         </tr>
